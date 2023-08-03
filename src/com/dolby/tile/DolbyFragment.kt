@@ -16,9 +16,12 @@
 
 package com.dolby.tile
 
+import android.content.ComponentName
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Switch
 
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragment
 
 import com.android.settingslib.widget.MainSwitchPreference
@@ -45,6 +48,12 @@ class DolbyFragment : PreferenceFragment(), OnMainSwitchChangeListener {
                 true
             }
         }
+
+        val launchAppPreference = findPreference<Preference>("launch_app")!!
+        launchAppPreference.setOnPreferenceClickListener {
+            launchExternalApp()
+            true
+        }
     }
 
     override fun onSwitchChanged(switchView: Switch, isChecked: Boolean) {
@@ -60,13 +69,27 @@ class DolbyFragment : PreferenceFragment(), OnMainSwitchChangeListener {
         }
     }
 
+private fun launchExternalApp() {
+    val packageName = "com.dolby.daxappui2
+    val activityName = "com.dolby.daxappui2.MainActivity"
+
+    val intent = Intent(Intent.ACTION_MAIN)
+    intent.setClassName(packageName, activityName)
+
+    val packageManager = requireContext().packageManager
+    if (intent.resolveActivity(packageManager) != null) {
+        startActivity(intent)
+    } else {
+    }
+}
+
+
     companion object {
         const val PREF_DOLBY_ENABLE = "dolby_enable"
 
         val PREF_DOLBY_MODES = mapOf(
-                "dolby_profile_tds" to DolbyCore.PROFILE_TDS,
-                "dolby_profile_dummy" to DolbyCore.PROFILE_DUMMY,
-
+            "dolby_profile_tds" to DolbyCore.PROFILE_TDS,
+            "dolby_profile_dummy" to DolbyCore.PROFILE_DUMMY
         )
     }
 }
